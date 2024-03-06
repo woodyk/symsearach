@@ -90,7 +90,18 @@ def print_file_metadata(file_path):
     try:
         file_stat = os.stat(file_path)
         print(f"--- {file_path}")
-        print(check_output(['stat', file_path]).decode())
+        print(f"Size: {file_stat.st_size} bytes")
+        print(f"Last modified: {datetime.datetime.fromtimestamp(file_stat.st_mtime).isoformat()}")
+        print(f"Last accessed: {datetime.datetime.fromtimestamp(file_stat.st_atime).isoformat()}")
+        print(f"Creation time: {datetime.datetime.fromtimestamp(file_stat.st_ctime).isoformat()}")
+        print(f"Mode: {file_stat.st_mode}")
+        print(f"Inode: {file_stat.st_ino}")
+        print(f"Device: {file_stat.st_dev}")
+        print(f"Number of links: {file_stat.st_nlink}")
+        print(f"UID of owner: {file_stat.st_uid}")
+        print(f"GID of owner: {file_stat.st_gid}")
+    except Exception as e:
+        print(f"Error obtaining metadata for {file_path}: {e}")
     except CalledProcessError as e:
         print(f"Error obtaining metadata for {file_path}: {e}")
 
