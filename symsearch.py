@@ -34,7 +34,7 @@ def load_nlp_models():
         sia = SentimentIntensityAnalyzer()
         NLP_AVAILABLE = True
     except ImportError:
-        check_nlp_pcakages()
+        check_nlp_packages()
         load_nlp_models()
         NLP_AVAILABLE = True
     except Exception as e:
@@ -156,12 +156,14 @@ def search_file(file_path, query, before_context, after_context, use_nlp, extrac
         
         if extract_code:
             if code is True:
+                #matches.append({"type": "code", "content": text.strip()}) 
                 highlighted = code_identifier.highlight_code(text, jsonl=jsonl)
                 matches.append({"type": "code", "content": highlighted.strip()}) 
             else:
                 code_blocks = code_identifier.extract_code_blocks(text)
                 for block in code_blocks:
                     if re.search(query, block, re.IGNORECASE):
+                        #matches.append({"type": "code", "content": block.strip()})
                         highlighted = code_identifier.highlight_code(block, jsonl=jsonl)
                         matches.append({"type": "code", "content": highlighted.strip()})
         else:
@@ -197,7 +199,10 @@ def main():
     parser.add_argument("-A", "--after-context", type=int, default=2, help="Lines of context after a match")
     parser.add_argument("--code", action="store_true", help="Extract and highlight code blocks matching the query")
     parser.add_argument("--use-nlp", action="store_true", help="Perform NLP analysis on matched text, requires NLTK and spaCy")
-    parser.add_argument("--style", default="monokai", choices=list(pygments.styles.get_all_styles()), help="Syntax highlighting style for code")
+
+    pygments_list = list(pygments.styles.get_all_styles())
+    pygments_list.append('none')
+    parser.add_argument("--style", default="monokai", choices=pygments_list, help="Syntax highlighting style for code")
     parser.add_argument("--jsonl", action="store_true", help="Output results in JSON Lines format for programmatic use")
 
     args = parser.parse_args()
